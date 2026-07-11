@@ -1,0 +1,46 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: uv sync --extra all
+
+      - name: Lint
+        run: uv run ruff check src tests
+
+      - name: Format check
+        run: uv run ruff format --check src tests
+
+      - name: Tests
+        run: uv run pytest -q
+
+      - name: Build
+        run: uv build
+
+  docker-images:
+    runs-on: ubuntu-latest
+    # Base images are only built on pushes to the default branch, not on every PR.
+    if: github.event_name == 'push'
+    strategy:
+      matrix:
+        image: [python, node, java, go, polyglot]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build ${{ matrix.image }} base image
+        run: |
+          docker build -f docker/base-${{ matrix.image }}.Dockerfile \
+            -t auto-dev/base-${{ matrix.image }}:ci docker/
