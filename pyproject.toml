@@ -1,13 +1,13 @@
 [project]
-name = "auto-dev-cli"
+name = "openlocal-cli"
 version = "0.1.0"
-description = "A local-first, provider-agnostic, sandboxed coding-agent CLI built on deepagents."
+description = "OpenLocal CLI — a local-first, provider-agnostic, sandboxed coding-agent CLI built on deepagents."
 readme = "README.md"
 requires-python = ">=3.12"
 license = "MIT"
 license-files = ["LICENSE"]
-authors = [{ name = "Auto-Dev CLI contributors" }]
-keywords = ["ai", "agent", "cli", "ollama", "groq", "llama.cpp", "deepagents", "coding-agent"]
+authors = [{ name = "OpenLocal CLI contributors" }]
+keywords = ["ai", "agent", "cli", "ollama", "groq", "llama.cpp", "deepagents", "coding-agent", "openlocal"]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Environment :: Console",
@@ -28,23 +28,24 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-groq = ["langchain-groq>=1.1.3"]
+groq    = ["langchain-groq>=1.1.3"]
 llamacpp = ["langchain-openai>=1.3.5"]
-all = ["auto-dev-cli[groq,llamacpp]"]
+web     = ["duckduckgo-search>=6.0"]
+all     = ["openlocal-cli[groq,llamacpp,web]"]
 
 [project.scripts]
-autodev = "autodev.cli:app"
+openlocal = "openlocal.cli:app"
 
 [project.urls]
-Homepage = "https://github.com/auto-dev-cli/auto-dev-cli"
-Repository = "https://github.com/auto-dev-cli/auto-dev-cli"
+Homepage = "https://github.com/openlocal-cli/openlocal-cli"
+Repository = "https://github.com/openlocal-cli/openlocal-cli"
 
 [build-system]
 requires = ["uv_build>=0.11.3,<0.12.0"]
 build-backend = "uv_build"
 
 [tool.uv.build-backend]
-module-name = "autodev"
+module-name = "openlocal"
 module-root = "src"
 
 [dependency-groups]

@@ -1,4 +1,4 @@
-from autodev.session import (
+from openlocal.session import (
     SessionMeta,
     ensure_gitignore,
     list_sessions,
@@ -41,7 +41,7 @@ def test_status_touch():
 def test_ensure_gitignore_adds_line(tmp_path):
     ensure_gitignore(tmp_path)
     content = (tmp_path / ".gitignore").read_text()
-    assert ".autodev/" in content
+    assert ".openlocal/" in content
     # idempotent
     ensure_gitignore(tmp_path)
-    assert content.count(".autodev/") == 1
+    assert content.count(".openlocal/") == 1

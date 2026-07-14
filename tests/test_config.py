@@ -1,6 +1,6 @@
 import tomllib
 
-from autodev.config import find_project_root, load_config, write_project
+from openlocal.config import find_project_root, load_config, write_project
 
 
 def test_defaults_load(tmp_path):
@@ -24,7 +24,7 @@ def test_cli_overrides_win(tmp_path):
 
 
 def test_find_project_root_prefers_marker(tmp_path):
-    (tmp_path / ".autodev.toml").write_text("")
+    (tmp_path / ".openlocal.toml").write_text("")
     sub = tmp_path / "a" / "b"
     sub.mkdir(parents=True)
     assert find_project_root(sub) == tmp_path
@@ -33,7 +33,7 @@ def test_find_project_root_prefers_marker(tmp_path):
 def test_write_project_merges(tmp_path):
     write_project(tmp_path, {"model": {"default": "x:y"}})
     write_project(tmp_path, {"sandbox": {"network": "full"}})
-    data = tomllib.loads((tmp_path / ".autodev.toml").read_text())
+    data = tomllib.loads((tmp_path / ".openlocal.toml").read_text())
     assert data["model"]["default"] == "x:y"
     assert data["sandbox"]["network"] == "full"
 

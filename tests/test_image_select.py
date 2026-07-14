@@ -1,4 +1,4 @@
-from autodev.sandbox.image_select import (
+from openlocal.sandbox.image_select import (
     IMAGE_JAVA,
     IMAGE_NODE,
     IMAGE_POLYGLOT,

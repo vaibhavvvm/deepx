@@ -1,6 +1,6 @@
 # Security & Threat Model
 
-Auto-Dev CLI runs a language model that can propose and execute shell commands
+OpenLocal CLI runs a language model that can propose and execute shell commands
 and file edits. This document states exactly what is and isn't protected, so you
 can decide whether that's acceptable for your repo — no hand-waving.
 
@@ -85,10 +85,10 @@ keep the approval list broad, and don't use `--yolo` on code you don't trust.
 ## Telemetry
 
 **Off by default.** When enabled (`[telemetry] enabled = true`), exactly one
-thing is collected, locally, in `~/.autodev/telemetry.json`: a per-command
+thing is collected, locally, in `~/.openlocal/telemetry.json`: a per-command
 invocation count and last-used timestamp. No prompts, no file contents, no model
-output, no network, no auto-upload. View it with `autodev config telemetry`. The
-code in `src/autodev/telemetry.py` is the complete specification.
+output, no network, no auto-upload. View it with `openlocal config telemetry`. The
+code in `src/openlocal/telemetry.py` is the complete specification.
 
 ## Reporting a vulnerability
 

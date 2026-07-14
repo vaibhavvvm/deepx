@@ -3,9 +3,9 @@
 from dataclasses import dataclass, field, replace
 from types import SimpleNamespace
 
-from autodev.agent.fallback import FallbackMiddleware
-from autodev.agent.retry import ToolCallRetryMiddleware
-from autodev.providers.base import build_spec
+from openlocal.agent.fallback import FallbackMiddleware
+from openlocal.agent.retry import ToolCallRetryMiddleware
+from openlocal.providers.base import build_spec
 
 
 @dataclass

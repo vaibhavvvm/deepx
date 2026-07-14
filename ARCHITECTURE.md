@@ -1,4 +1,4 @@
-# Auto-Dev CLI — Architecture & File-by-File Logic
+# OpenLocal CLI — Architecture & File-by-File Logic
 
 A local-first, provider-agnostic, sandboxed coding-agent CLI built on
 `deepagents` (LangChain's agent harness). This document explains **what each
@@ -45,7 +45,7 @@ Three invariants hold no matter what the model does:
 ## 2. Package layout
 
 ```
-src/autodev/
+src/openlocal/
 ├── __init__.py            # version
 ├── cli.py                 # Typer app — command definitions only
 ├── config.py              # layered config resolution (global→project→CLI)
@@ -75,7 +75,7 @@ src/autodev/
 │   ├── console.py         # rich rendering: banners, status line, tables
 │   └── approval.py        # interactive y/n/always approval callback
 └── commands/
-    ├── init_cmd.py        # `autodev init` wizard
+    ├── init_cmd.py        # `openlocal init` wizard
     ├── run_cmd.py         # `start` / `run` / `resume` orchestration
     └── repl.py            # interactive REPL + slash commands (opencode-style)
 
@@ -92,15 +92,15 @@ tests/                     # pytest suite (Docker backend mocked — no daemon n
 **`cli.py`** — The Typer app. Purely declarative: defines commands (`init`,
 `doctor`, `start`, `run`, `resume`, `models`, `config`, `sessions`, `sandbox`)
 and their flags, then delegates to `commands/*`. Keeps heavy imports lazy (inside
-functions) so `autodev --help` stays instant. `_resolve_spec` turns a
+functions) so `openlocal --help` stays instant. `_resolve_spec` turns a
 `provider:model` string into a `ProviderSpec`; `_network_overrides` maps
 `--network`/`--no-network` flags into the session config layer.
 
 ### Configuration
 
 **`config.py`** — Three-layer config, later overrides earlier:
-`DEFAULTS` → `~/.autodev/config.toml` (global) → `<repo>/.autodev.toml` (project)
-→ CLI-flag overrides. `find_project_root` walks up looking for `.autodev.toml`
+`DEFAULTS` → `~/.openlocal/config.toml` (global) → `<repo>/.openlocal.toml` (project)
+→ CLI-flag overrides. `find_project_root` walks up looking for `.openlocal.toml`
 then `.git`. `load_config` deep-merges all layers into a `Config` object with
 typed accessors (`.model_string`, `.sandbox`, `.policy`, `.subagents`).
 `set_key` writes a dotted `section.key` into the chosen scope's TOML.
@@ -115,7 +115,7 @@ registry lets each backend describe itself, health-check, and produce a
 LangChain `BaseChatModel`. `parse_model_string` splits `ollama:qwen2.5-coder:7b`
 on the *first* colon (model names contain colons). `resolve_model(spec)` is the
 one call the agent builder uses. Third-party providers can register via the
-`autodev.providers` entry point without touching core.
+`openlocal.providers` entry point without touching core.
 
 **`providers/ollama_provider.py`** — Local Ollama. `build_spec` guesses
 tool-calling support from a known-good family list (Qwen2.5-Coder, Llama-3.1,
@@ -164,7 +164,7 @@ for free (they shell out via `execute`). Key logic:
   approve → invoke the approval callback. Then runs via coreutils `timeout` so a
   runaway/dev-server command is killed and returns partial output
   (`truncated=True`). Output over ~16 KB is tailed and the full log written to
-  `/workspace/.autodev/logs/` for the agent to `read_file`.
+  `/workspace/.openlocal/logs/` for the agent to `read_file`.
 - `upload_files`/`download_files` stream bytes via tar (`put_archive`/
   `get_archive`).
 - **Robustness:** `client` raises a clear `SandboxUnavailable` if the daemon is
@@ -187,7 +187,7 @@ reads bundled markdown. The **middleware stack** is ordered outermost-first:
 
 **`agent/subagents.py`** — Builds `planner` / `coder` / `tester` / `reviewer`
 `SubAgent` specs and applies per-role model overrides from
-`.autodev.toml [subagents.models]` (e.g. cheap local tester, Groq coder).
+`.openlocal.toml [subagents.models]` (e.g. cheap local tester, Groq coder).
 
 **`agent/memory.py`** — Loads the repo's `AGENTS.md` and folds it into the
 system prompt wrapped in `<project_conventions>` tags — framed as *data/config*,
@@ -228,8 +228,8 @@ is still enforced in the backend regardless.
 
 **`session.py`** — Each session gets a 12-char UUID, a JSON metadata record
 (model, status, prompt, image, network) and a SQLite checkpointer at
-`.autodev/sessions/<id>.db`. `open_checkpointer` yields a `SqliteSaver`;
-`thread_config` selects the thread. `ensure_gitignore` adds `.autodev/`.
+`.openlocal/sessions/<id>.db`. `open_checkpointer` yields a `SqliteSaver`;
+`thread_config` selects the thread. `ensure_gitignore` adds `.openlocal/`.
 History is never mutated in place → lays groundwork for a future `rewind`.
 
 **`runner.py`** — Drives one user turn: streams the agent (`stream_mode=values`),
@@ -241,8 +241,8 @@ round-trip (catches Docker Desktop / WSL2 path issues), provider reachability,
 and a **tool-calling probe** — binds a trivial `add` tool and checks the model
 emits a valid tool call, recording capability empirically.
 
-**`commands/init_cmd.py`** — `autodev init` wizard: detect Ollama models, offer
-llama.cpp/Groq, pick default model + network policy, write `.autodev.toml`,
+**`commands/init_cmd.py`** — `openlocal init` wizard: detect Ollama models, offer
+llama.cpp/Groq, pick default model + network policy, write `.openlocal.toml`,
 store any Groq key in the keyring, add `.gitignore`.
 
 **`commands/run_cmd.py`** — Orchestrates `start`/`run`/`resume`. `_build_sandbox`
@@ -260,8 +260,8 @@ kept), `/compact` (summarize then continue with a lean context), `/sessions`,
 `/init` (write a starter `AGENTS.md`), `/help`, `/exit`.
 
 **`telemetry.py`** — Opt-in, off by default. When enabled, records only a
-per-command invocation count + last-used timestamp in `~/.autodev/telemetry.json`.
-No prompts, contents, or network. `autodev config telemetry` displays it. The
+per-command invocation count + last-used timestamp in `~/.openlocal/telemetry.json`.
+No prompts, contents, or network. `openlocal config telemetry` displays it. The
 file *is* the spec (mirrored in SECURITY.md).
 
 ---
@@ -287,8 +287,8 @@ secrets redacted + reported → scrubbed request sent to Groq.
 
 ## 5. Extension points
 
-- **New provider:** implement `Provider` + register via the `autodev.providers`
-  entry point (`pip install autodev-provider-vllm`).
+- **New provider:** implement `Provider` + register via the `openlocal.providers`
+  entry point (`pip install openlocal-provider-vllm`).
 - **New sandbox:** anything implementing deepagents' `SandboxBackendProtocol`
   can replace `DockerSandboxBackend` (e.g. Podman, a cloud sandbox).
 - **New subagent / house rules:** add specs in `subagents.py`, or just drop an

@@ -1,14 +1,14 @@
 # Contributing
 
-Thanks for helping build Auto-Dev CLI. The repo is meant to be readable in an
+Thanks for helping build OpenLocal CLI. The repo is meant to be readable in an
 afternoon — keep it that way.
 
 ## Setup
 
 ```bash
-git clone <repo> && cd auto-dev-cli
+git clone <repo> && cd openlocal-cli
 uv sync --extra all          # installs core + groq + llamacpp + dev deps
-uv run autodev doctor
+uv run openlocal doctor
 ```
 
 ## Dev loop
@@ -44,11 +44,11 @@ See [`ARCHITECTURE.md`](./ARCHITECTURE.md) for the file-by-file map. In short:
 
 ## Adding a provider (no core change)
 
-Implement `autodev.providers.base.Provider` and expose a factory via the
-`autodev.providers` entry point:
+Implement `openlocal.providers.base.Provider` and expose a factory via the
+`openlocal.providers` entry point:
 
 ```toml
-[project.entry-points."autodev.providers"]
+[project.entry-points."openlocal.providers"]
 vllm = "autodev_provider_vllm:make_provider"
 ```
 

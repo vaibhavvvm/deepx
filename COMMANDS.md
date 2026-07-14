@@ -1,4 +1,4 @@
-# Auto-Dev CLI — Setup & Commands
+# OpenLocal CLI — Setup & Commands
 
 Everything you need to install, configure, and run the tool. For how the code
 works, see [`ARCHITECTURE.md`](./ARCHITECTURE.md).
@@ -32,24 +32,24 @@ python3 --version  # 3.12+
 # from the project root
 uv sync                        # install core deps into .venv
 uv sync --extra all            # + groq + llama.cpp extras
-uv run autodev --help          # run without activating the venv
+uv run openlocal --help          # run without activating the venv
 ```
 
 ### B. Install as a global tool (pipx)
 
 ```bash
-pipx install auto-dev-cli               # Ollama support only (light)
-pipx install "auto-dev-cli[all]"        # + Groq + llama.cpp
-pipx install "auto-dev-cli[groq]"       # + Groq only
+pipx install openlocal-cli               # Ollama support only (light)
+pipx install "openlocal-cli[all]"        # + Groq + llama.cpp
+pipx install "openlocal-cli[groq]"       # + Groq only
 ```
 
-After a pipx install the command is just `autodev` (drop the `uv run` prefix
+After a pipx install the command is just `openlocal` (drop the `uv run` prefix
 from every example below).
 
 ### C. Pull a coding model (Ollama)
 
 ```bash
-autodev models pull qwen2.5-coder:7b
+openlocal models pull qwen2.5-coder:7b
 # or use the ollama CLI directly:
 ollama pull qwen2.5-coder:7b
 ```
@@ -66,8 +66,8 @@ export GROQ_API_KEY=gsk_...
 ## 3. First run
 
 ```bash
-uv run autodev init        # detect providers, pick default model, write .autodev.toml
-uv run autodev doctor      # verify docker + provider + tool-calling capability
+uv run openlocal init        # detect providers, pick default model, write .openlocal.toml
+uv run openlocal doctor      # verify docker + provider + tool-calling capability
 ```
 
 ---
@@ -76,20 +76,20 @@ uv run autodev doctor      # verify docker + provider + tool-calling capability
 
 ```bash
 # interactive agent REPL (main entry)
-uv run autodev start
-uv run autodev start "add a null check to user_service.py"
+uv run openlocal start
+uv run openlocal start "add a null check to user_service.py"
 
 # pick a model for this run
-uv run autodev start -m ollama:qwen2.5-coder:7b
-uv run autodev start -m groq:llama-3.3-70b-versatile
+uv run openlocal start -m ollama:qwen2.5-coder:7b
+uv run openlocal start -m groq:llama-3.3-70b-versatile
 
 # non-interactive one-shot (CI / scripts) — auto-approves gated commands
-uv run autodev run "fix the failing test in tests/test_math.py" --yes
-uv run autodev run "bump version to 1.2.0" -m groq:llama-3.3-70b-versatile -y
+uv run openlocal run "fix the failing test in tests/test_math.py" --yes
+uv run openlocal run "bump version to 1.2.0" -m groq:llama-3.3-70b-versatile -y
 
 # resume a previous / crashed / paused session
-uv run autodev sessions list
-uv run autodev resume <session_id>
+uv run openlocal sessions list
+uv run openlocal resume <session_id>
 ```
 
 ---
@@ -97,11 +97,11 @@ uv run autodev resume <session_id>
 ## 5. Network & safety flags
 
 ```bash
-uv run autodev start --no-network           # force container network off (safest)
-uv run autodev start --network restricted   # host-local Ollama/llama.cpp reachable
-uv run autodev start --network full          # allow pip/npm/go installs
-uv run autodev start --yolo                  # skip approval prompts (DANGEROUS)
-uv run autodev run "..." --yes               # auto-approve in non-interactive mode
+uv run openlocal start --no-network           # force container network off (safest)
+uv run openlocal start --network restricted   # host-local Ollama/llama.cpp reachable
+uv run openlocal start --network full          # allow pip/npm/go installs
+uv run openlocal start --yolo                  # skip approval prompts (DANGEROUS)
+uv run openlocal run "..." --yes               # auto-approve in non-interactive mode
 ```
 
 `--yolo` skips the **approval** gate only. The **deny-list** (fork bombs, `mkfs`,
@@ -111,7 +111,7 @@ uv run autodev run "..." --yes               # auto-approve in non-interactive m
 
 ## 6. In-REPL slash commands
 
-Inside `autodev start` (type `/help` to see this in the app):
+Inside `openlocal start` (type `/help` to see this in the app):
 
 ```
 > /help                                  # list all commands
@@ -133,8 +133,8 @@ Inside `autodev start` (type `/help` to see this in the app):
 ## 7. Models
 
 ```bash
-uv run autodev models list              # unified view across ollama/llamacpp/groq
-uv run autodev models pull <name>       # pull via Ollama
+uv run openlocal models list              # unified view across ollama/llamacpp/groq
+uv run openlocal models pull <name>       # pull via Ollama
 ```
 
 ---
@@ -142,16 +142,16 @@ uv run autodev models pull <name>       # pull via Ollama
 ## 8. Configuration
 
 ```bash
-uv run autodev config get model.default
-uv run autodev config set model.default ollama:qwen2.5-coder:7b
-uv run autodev config set sandbox.network none
-uv run autodev config set model.default groq:llama-3.3-70b-versatile --global
-uv run autodev config edit               # open .autodev.toml in $EDITOR
-uv run autodev config edit --global      # open ~/.autodev/config.toml
-uv run autodev config telemetry          # show local, opt-in usage counters
+uv run openlocal config get model.default
+uv run openlocal config set model.default ollama:qwen2.5-coder:7b
+uv run openlocal config set sandbox.network none
+uv run openlocal config set model.default groq:llama-3.3-70b-versatile --global
+uv run openlocal config edit               # open .openlocal.toml in $EDITOR
+uv run openlocal config edit --global      # open ~/.openlocal/config.toml
+uv run openlocal config telemetry          # show local, opt-in usage counters
 ```
 
-Example `.autodev.toml` (committed, no secrets):
+Example `.openlocal.toml` (committed, no secrets):
 
 ```toml
 [model]
@@ -187,7 +187,7 @@ enabled = false               # opt-in, local-only counts; never uploaded
 
 ```bash
 # only for keep-alive sessions (set sandbox.keep_alive = true)
-uv run autodev sandbox shell <session_id>   # raw shell inside the container
+uv run openlocal sandbox shell <session_id>   # raw shell inside the container
 ```
 
 ---
@@ -207,13 +207,13 @@ uv build                      # build the wheel/sdist
 
 | Command | Purpose |
 |---|---|
-| `autodev init` | First-run wizard |
-| `autodev doctor` | Health + capability check |
-| `autodev start [PROMPT]` | Interactive REPL |
-| `autodev run "<task>" --yes` | One-shot (CI) |
-| `autodev resume <id>` | Resume a session |
-| `autodev sessions list` | List past sessions |
-| `autodev models list / pull` | Model management |
-| `autodev config get/set/edit` | Config management |
-| `autodev config telemetry` | Show local opt-in usage counters |
-| `autodev sandbox shell <id>` | Raw container shell (keep-alive sessions) |
+| `openlocal init` | First-run wizard |
+| `openlocal doctor` | Health + capability check |
+| `openlocal start [PROMPT]` | Interactive REPL |
+| `openlocal run "<task>" --yes` | One-shot (CI) |
+| `openlocal resume <id>` | Resume a session |
+| `openlocal sessions list` | List past sessions |
+| `openlocal models list / pull` | Model management |
+| `openlocal config get/set/edit` | Config management |
+| `openlocal config telemetry` | Show local opt-in usage counters |
+| `openlocal sandbox shell <id>` | Raw container shell (keep-alive sessions) |

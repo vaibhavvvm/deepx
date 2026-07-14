@@ -1,4 +1,4 @@
-from autodev.sandbox.secret_scan import REDACTION, scan
+from openlocal.sandbox.secret_scan import REDACTION, scan
 
 
 def test_redacts_aws_key():

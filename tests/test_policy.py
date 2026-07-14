@@ -1,4 +1,4 @@
-from autodev.sandbox.policy import Decision, Policy
+from openlocal.sandbox.policy import Decision, Policy
 
 
 def make_policy():

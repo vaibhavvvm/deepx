@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-import autodev.config as config_mod
+import openlocal.config as config_mod
 
 
 @pytest.fixture(autouse=True)

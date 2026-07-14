@@ -1,5 +1,6 @@
-from autodev.agent.build import _should_enable_subagents, load_prompt
-from autodev.providers.base import build_spec
+from openlocal.agent.build import _should_enable_subagents, load_prompt
+from openlocal.providers.base import build_spec
+from openlocal.agent.subagents import build_subagents
 
 
 def _cfg(enabled=True):
@@ -27,7 +28,7 @@ def test_prompts_load():
 
 
 def test_subagent_specs_build_with_overrides():
-    from autodev.agent.subagents import build_subagents
+    from openlocal.agent.subagents import build_subagents
 
     subs = build_subagents({"coder": "groq:llama-3.3-70b-versatile"})
     names = {s["name"] for s in subs}

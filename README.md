@@ -1,4 +1,4 @@
-# Auto-Dev CLI
+# OpenLocal CLI
 
 A **local-first, provider-agnostic, sandboxed** coding-agent CLI built on
 [`deepagents`](https://github.com/langchain-ai/deepagents) (LangChain's agent
@@ -11,7 +11,7 @@ risky.
 - **Swap models at runtime** — `/model groq:llama-3.3-70b-versatile` mid-session.
 - **Safety before capability** — deny-list is absolute, risky commands need a
   `y`, secrets are scrubbed before any cloud call.
-- **Resumable** — every session is checkpointed to SQLite; `autodev resume <id>`.
+- **Resumable** — every session is checkpointed to SQLite; `openlocal resume <id>`.
 
 > Docs: [`ARCHITECTURE.md`](./ARCHITECTURE.md) (how the code works) ·
 > [`COMMANDS.md`](./COMMANDS.md) (every command) ·
@@ -27,23 +27,23 @@ docker ps
 ollama pull qwen2.5-coder:7b
 
 # 2. install
-pipx install auto-dev-cli            # Ollama support (light)
-pipx install "auto-dev-cli[all]"     # + Groq + llama.cpp
+pipx install openlocal-cli            # Ollama support (light)
+pipx install "openlocal-cli[all]"     # + Groq + llama.cpp
 
 # 3. set up + verify
-autodev init
-autodev doctor
+openlocal init
+openlocal doctor
 
 # 4. go
-autodev start "add a null check to user_service.py"
+openlocal start "add a null check to user_service.py"
 ```
 
 Developing from this repo instead? Use `uv`:
 
 ```bash
 uv sync --extra all
-uv run autodev doctor
-uv run autodev start
+uv run openlocal doctor
+uv run openlocal start
 ```
 
 ---
@@ -71,8 +71,8 @@ one assumes the opposite and designs for it:
 | **llama.cpp** | You want raw GGUF / performance tuning | No |
 | **Groq** | Local hardware too slow, or you need a bigger model | **Yes** (BYO key) |
 
-Set a default: `autodev config set model.default ollama:qwen2.5-coder:7b`
-Override per-run: `autodev start -m groq:llama-3.3-70b-versatile`
+Set a default: `openlocal config set model.default ollama:qwen2.5-coder:7b`
+Override per-run: `openlocal start -m groq:llama-3.3-70b-versatile`
 
 ---
 
@@ -91,13 +91,13 @@ and the threat model live in [`SECURITY.md`](./SECURITY.md).
 ## Commands at a glance
 
 ```
-autodev init | doctor
-autodev start [PROMPT]              # interactive REPL
-autodev run "<task>" --yes         # one-shot (CI)
-autodev resume <id> | sessions list
-autodev models list | pull <name>
-autodev config get/set/edit | telemetry
-autodev sandbox shell <id>
+openlocal init | doctor
+openlocal start [PROMPT]              # interactive REPL
+openlocal run "<task>" --yes         # one-shot (CI)
+openlocal resume <id> | sessions list
+openlocal models list | pull <name>
+openlocal config get/set/edit | telemetry
+openlocal sandbox shell <id>
 ```
 
 In-REPL: `/help /model /models /status /diff /shell /clear /compact /sessions
@@ -107,7 +107,7 @@ In-REPL: `/help /model /models /status /diff /shell /clear /compact /sessions
 
 ## Configuration
 
-Layered, later wins: `~/.autodev/config.toml` (global) → `<repo>/.autodev.toml`
+Layered, later wins: `~/.openlocal/config.toml` (global) → `<repo>/.openlocal.toml`
 (committed, no secrets) → CLI flags. Example project config:
 
 ```toml
@@ -137,8 +137,8 @@ automatically.
 
 ## Extending
 
-- **New provider**: implement `Provider` and register via the `autodev.providers`
-  entry point — `pip install autodev-provider-vllm`, no core change.
+- **New provider**: implement `Provider` and register via the `openlocal.providers`
+  entry point — `pip install openlocal-provider-vllm`, no core change.
 - **New sandbox**: anything implementing deepagents' `SandboxBackendProtocol`
   (e.g. Podman, a cloud sandbox) can replace the Docker backend.
 

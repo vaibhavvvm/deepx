@@ -1,6 +1,6 @@
 import pytest
 
-from autodev.providers.base import (
+from openlocal.providers.base import (
     ProviderSpec,
     build_spec,
     get_provider,

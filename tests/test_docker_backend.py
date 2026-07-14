@@ -7,8 +7,8 @@ timeouts surface as truncated, and secret-shaped writes are refused.
 
 from types import SimpleNamespace
 
-from autodev.sandbox.docker_backend import DockerSandboxBackend
-from autodev.sandbox.policy import Policy
+from openlocal.sandbox.docker_backend import DockerSandboxBackend
+from openlocal.sandbox.policy import Policy
 
 
 class FakeContainer:

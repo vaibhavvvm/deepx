@@ -1,0 +1,11 @@
+{
+  "id": "ab668560d62e",
+  "model_string": "ollama:gpt-oss:latest",
+  "status": "failed",
+  "prompt": "",
+  "created_at": "2026-07-11T12:45:24.304233+00:00",
+  "updated_at": "2026-07-11T12:46:01.327264+00:00",
+  "image": "python:3.12-slim",
+  "network": "none",
+  "container_name": ""
+}

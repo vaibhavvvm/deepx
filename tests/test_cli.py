@@ -1,6 +1,6 @@
 from typer.testing import CliRunner
 
-from autodev.cli import app
+from openlocal.cli import app
 
 runner = CliRunner()
 
@@ -8,7 +8,7 @@ runner = CliRunner()
 def test_version():
     result = runner.invoke(app, ["version"])
     assert result.exit_code == 0
-    assert "auto-dev" in result.stdout
+    assert "openlocal" in result.stdout
 
 
 def test_help():
